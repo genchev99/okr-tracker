@@ -1,12 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Authenticate from "./components/pages/authenticate";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+  useParams
+} from "react-router-dom";
+import Authenticate from "./components/pages/auth";
 
-function App() {
+export default function App() {
   return (
-    <Authenticate />
+    <Router>
+      <div>
+        {/* Todo place the nav here */}
+
+        <Switch>
+          <Route path="/auth">
+            <Authenticate />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
-
-export default App;
