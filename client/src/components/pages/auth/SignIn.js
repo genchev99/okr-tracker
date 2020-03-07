@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,6 +12,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import AuthContext from "../../contexts/AuthContext";
+import validate from "validate.js";
 
 function Copyright() {
   return (
@@ -47,8 +48,34 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const constraints = {
+  password: {
+    password: {
+      presence: true,
+      length: {
+        minimum: 10,
+        message: 'Must be at least 10 characters',
+      },
+    },
+  },
+  email: {
+    email: {
+      email: true,
+    }
+  }
+};
+
 export default function SignIn() {
   const classes = useStyles();
+  const auth = useContext(AuthContext);
+
+  const login = (event) => {
+    event.preventDefault();
+
+  };
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
     <Container component="main" maxWidth="xs">
@@ -60,8 +87,12 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={login}>
           <TextField
+            error={!!validate({email}, constraints.email)}
+            helperText={!!validate({email}, constraints.email)
+              ? validate({email}, constraints.email).email.toString()
+              : ''}
             variant="outlined"
             margin="normal"
             required
@@ -71,8 +102,13 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
+            onChange={event => setEmail(event.target.value)}
           />
           <TextField
+            error={!!validate({password}, constraints.password)}
+            helperText={!!validate({password}, constraints.password)
+              ? validate({password}, constraints.password).password.toString()
+              : ''}
             variant="outlined"
             margin="normal"
             required
@@ -82,6 +118,7 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={event => setPassword(event.target.value)}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
