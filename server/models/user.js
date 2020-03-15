@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const collection = 'users';
 
 const schema = new mongoose.Schema({
@@ -21,6 +22,20 @@ const schema = new mongoose.Schema({
 }, {
   timestamps: true,
   collection,
+});
+
+schema.methods = {
+  checkPassword: password => bcrypt.compareSync(password, this.password),
+  hashPassword: textPassword => bcrypt.hashSync(plainTextPassword, 10),
+};
+
+schema.pre('save', next => {
+  if (!this.password)
+    throw 'Password cannot be empty';
+  else
+    this.password = this.hashPassword(this.password);
+
+  next();
 });
 
 

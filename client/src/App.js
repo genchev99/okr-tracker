@@ -8,7 +8,7 @@ import {
   useParams
 } from "react-router-dom";
 import Authenticate from "./components/pages/auth";
-import AuthContext from "./components/contexts/AuthContext";
+import AuthContext from "./contexts/AuthContext";
 
 export default class App extends React.Component {
   state = {
