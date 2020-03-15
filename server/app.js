@@ -1,13 +1,22 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+'use strict';
+require('dotenv').config({path: './.env'});
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const mongoose = require('mongoose');
 
-var app = express();
+/* Auth */
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+/* Routers */
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+
+const PORT = 8080;
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -38,4 +47,9 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+mongoose.connect(process.env.DATABASE_URL).then(() => {
+  console.info('Database successfully connected on: ', process.env.DATABASE_URL);
+  console.info('Starting express server on port: ', PORT);
+  app.listen(PORT);
+  console.info('Express server successfully started on: ', PORT);
+});
