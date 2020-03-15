@@ -71,7 +71,6 @@ export default function SignIn() {
 
   const login = (event) => {
     event.preventDefault();
-
   };
 
   const [email, setEmail] = useState('');
