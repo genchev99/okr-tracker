@@ -1,4 +1,6 @@
+const baseUrl = 'http://localhost:8081/api/v1';
+
 export default {
-  SIGN_IN: '/auth/sign-in',
-  SIGN_UP: '/auth/sign-up',
+  LOGIN: `${baseUrl}/auth/sign-in`,
+  REGISTER: `${baseUrl}/auth/sign-up`,
 };

@@ -19,6 +19,22 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.String,
     default: null,
   },
+  company: {
+    type: mongoose.Schema.String,
+    default: null,
+  },
+  invitedBy: {
+    type: String,
+    default: null,
+  },
+  status: {
+    type: String,
+    default: null,
+  },
+  activated: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true,
   collection,

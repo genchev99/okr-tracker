@@ -3,7 +3,7 @@ import endpoints from './endpoints';
 
 export default {
   auth: {
-    'sign-in': (body) =>
-      axios.post(endpoints.SIGN_IN, body),
+    login: (payload = {}) => axios.post(endpoints.LOGIN, payload),
+    register: (payload = {}) => axios.post(endpoints.REGISTER, payload),
   }
 }

@@ -1,14 +1,12 @@
-import React, {useState} from "react";
+import React, {useState} from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  useRouteMatch,
-  useParams
-} from "react-router-dom";
-import Authenticate from "./components/pages/auth";
-import AuthContext from "./contexts/AuthContext";
+} from 'react-router-dom';
+import Authenticate from './components/pages/auth';
+import AuthContext from './contexts/AuthContext';
+import api from './api';
 
 export default class App extends React.Component {
   state = {
@@ -17,7 +15,12 @@ export default class App extends React.Component {
   };
 
   login = data => {
-    this.setState(data);
+    api.auth.login(data)
+      .then(res => {
+        console.log(res);
+      });
+
+    // this.setState(data);
   };
 
   logout = () => {
