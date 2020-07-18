@@ -6,6 +6,8 @@ import {
 } from 'react-router-dom';
 import Authenticate from './components/pages/auth';
 import AuthContext from './contexts/AuthContext';
+import AuthRoute from './routes/AuthRoute';
+import NotAuthRoute from './routes/NotAuthRoute';
 import api from './api';
 import AuthService from './authService';
 
@@ -30,10 +32,7 @@ export default class App extends React.Component {
   };
 
   logout = () => {
-    this.setState({
-      email: null,
-      company: null,
-    });
+    authService.logout();
   };
 
   register = (payload) => {
@@ -50,9 +49,7 @@ export default class App extends React.Component {
           {/* Todo place the nav here */}
 
           <Switch>
-            <Route path="/auth">
-              <Authenticate/>
-            </Route>
+            <NotAuthRoute isAuthenticated={authService.isLoggedIn()} path="/auth" component={Authenticate}/>
           </Switch>
         </AuthContext.Provider>
       </Router>
