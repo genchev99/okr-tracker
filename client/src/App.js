@@ -7,18 +7,26 @@ import {
 import Authenticate from './components/pages/auth';
 import AuthContext from './contexts/AuthContext';
 import api from './api';
+import AuthService from './authService';
+
+const authService = new AuthService();
 
 export default class App extends React.Component {
   state = {
-    email: null,
-    company: null,
+    token: localStorage.getItem('token') || null,
   };
 
   login = data => {
     api.auth.login(data)
-      // .then(res => {
-      //   console.log(res);
-      // });
+      .then(({data}) => {
+        if (!data.success) {
+          throw data;
+        }
+
+        authService.setLocalStorage(data);
+      }).catch(err => {
+        console.error(err);
+      });
   };
 
   logout = () => {
@@ -38,7 +46,7 @@ export default class App extends React.Component {
   render() {
     return (
       <Router>
-        <AuthContext.Provider value={{...this.state, login: this.login, logout: this.logout, register: this.register}}>
+        <AuthContext.Provider value={{...this.state, login: this.login, logout: this.logout, register: this.register, authService,}}>
           {/* Todo place the nav here */}
 
           <Switch>
