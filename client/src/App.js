@@ -16,11 +16,9 @@ export default class App extends React.Component {
 
   login = data => {
     api.auth.login(data)
-      .then(res => {
-        console.log(res);
-      });
-
-    // this.setState(data);
+      // .then(res => {
+      //   console.log(res);
+      // });
   };
 
   logout = () => {
@@ -30,10 +28,17 @@ export default class App extends React.Component {
     });
   };
 
+  register = (payload) => {
+    api.auth.register(payload)
+      .then(res => {
+        console.log(res);
+      });
+  };
+
   render() {
     return (
       <Router>
-        <AuthContext.Provider value={{...this.state, login: this.login, logout: this.logout}}>
+        <AuthContext.Provider value={{...this.state, login: this.login, logout: this.logout, register: this.register}}>
           {/* Todo place the nav here */}
 
           <Switch>

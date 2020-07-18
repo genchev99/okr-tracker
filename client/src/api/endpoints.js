@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:8081/api/v1';
+const baseUrl = 'http://localhost:8080/api/v1';
 
 export default {
   LOGIN: `${baseUrl}/auth/sign-in`,

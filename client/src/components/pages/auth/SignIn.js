@@ -14,20 +14,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AuthContext from '../../../contexts/AuthContext';
 import validate from 'validate.js';
-import api from '../../../api';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -68,21 +54,7 @@ const constraints = {
 
 export default function SignIn() {
   const classes = useStyles();
-  const auth = useContext(AuthContext);
-
-  const login = (event) => {
-    event.preventDefault();
-
-    api.auth["sign-in"]({
-      email,
-      password,
-    }).then(res => {
-      console.info(res);
-      auth.login();
-    }).catch(res => {
-      console.error(res);
-    });
-  };
+  const {login} = useContext(AuthContext);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -113,6 +85,7 @@ export default function SignIn() {
             autoComplete="email"
             autoFocus
             onChange={event => setEmail(event.target.value)}
+            value={email}
           />
           <TextField
             error={!!validate({password}, constraints.password)}
@@ -129,17 +102,21 @@ export default function SignIn() {
             id="password"
             autoComplete="current-password"
             onChange={event => setPassword(event.target.value)}
+            value={password}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
           <Button
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={() => login({
+              email,
+              password,
+            })}
           >
             Sign In
           </Button>
