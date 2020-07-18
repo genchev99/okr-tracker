@@ -15,7 +15,11 @@ const schema = new mongoose.Schema({
     type: String,
     default: null,
   },
-  password: {
+  hash: {
+    type: String,
+    default: null,
+  },
+  salt: {
     type: String,
     default: null,
   },
@@ -40,20 +44,20 @@ const schema = new mongoose.Schema({
   collection,
 });
 
-schema.methods = {
-  checkPassword: password => bcrypt.compareSync(password, this.password),
-  hashPassword: textPassword => bcrypt.hashSync(textPassword, 10),
-};
-
-schema.pre('save', function (next) {
-  console.log(this);
-  if (!this.password)
-    throw 'Password cannot be empty';
-  else
-    this.password = this.hashPassword(this.password);
-
-  next();
-});
+// schema.methods = {
+//   checkPassword: password => bcrypt.compareSync(password, this.password),
+//   hashPassword: textPassword => bcrypt.hashSync(textPassword, 10),
+// };
+//
+// schema.pre('save', function (next) {
+//   console.log(this);
+//   if (!this.password)
+//     throw 'Password cannot be empty';
+//   else
+//     this.password = this.hashPassword(this.password);
+//
+//   next();
+// });
 
 
 module.exports = mongoose.model(collection, schema);

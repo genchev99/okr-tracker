@@ -8,15 +8,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+const passport = require('passport');
 
-/* Auth */
-const session = require('express-session');
-const passport = require('./passport/setup');
-const MongoStore = require('connect-mongo')(session);
-const LocalStrategy = require('passport-local').Strategy;
-/* Routers */
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
+
+/* Load database models */
+require('./models/user');
 
 const PORT = 8080;
 const app = express();
@@ -27,17 +25,8 @@ app.use(cors());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(
-  session({
-    secret: "very secret this is",
-    resave: false,
-    saveUninitialized: true,
-    store: new MongoStore({ mongooseConnection: mongoose.connection })
-  })
-);
-
+require('./config/passport')(passport);
 app.use(passport.initialize());
-app.use(passport.session()); // calls serializeUser and deserializeUser
 
 app.use(logger('dev'));
 app.use(express.json());

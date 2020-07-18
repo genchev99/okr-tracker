@@ -1,35 +1,59 @@
-const express = require("express");
-const router = express.Router();
-const passport = require("passport");
-const user = require('../models/user');
+const mongoose = require('mongoose');
+const router = require('express').Router();
+const User = require('../models/user');
+const passport = require('passport');
+const utils = require('../lib/utils');
 
-router.post('/sign-in', (req, res, next) => {
-  // res.json(req.body);
-  passport.authenticate('local', function (err, user, info) {
-    if (err) {
-      return res.status(400).json({errors: err});
-    }
-    if (!user) {
-      return res.status(400).json({errors: "No user found"});
-    }
-
-    req.logIn(user, function (err) {
-      if (err) {
-        return res.status(400).json({errors: err});
-      }
-
-      return res.status(200).json({success: `logged in ${user.email}`});
-    });
-  })(req, res, next);
+router.get('/protected', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+  res.status(200).json({success: true, msg: 'You are successfully authenticated to this route!', ...req.user});
 });
 
-router.post('/sign-up', async (req, res) => {
+// Validate an existing user and issue a JWT
+router.post('/sign-in', function (req, res, next) {
+  User.findOne({email: req.body.email})
+    .then((user) => {
+
+      if (!user) {
+        res.status(401).json({success: false, msg: 'User could not be found!'});
+      }
+
+      // Function defined at bottom of app.js
+      const isValid = utils.validPassword(req.body.password, user.hash, user.salt);
+
+      if (isValid) {
+        const tokenObject = utils.issueJWT(user);
+
+        res.status(200).json({success: true, token: tokenObject.token, expiresIn: tokenObject.expires});
+      } else {
+        res.status(401).json({success: false, msg: "you entered the wrong password"});
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
+// Register a new user
+router.post('/sign-up', function (req, res, next) {
+  const saltHash = utils.genPassword(req.body.password);
+
+  const salt = saltHash.salt;
+  const hash = saltHash.hash;
+  delete req.body.password;
+
+  const newUser = new User({
+    ...req.body,
+    hash: hash,
+    salt: salt
+  });
+
   try {
-    const {_id} = await user.create({...req.body, activated: true});
-    res.status(201).location(`/users/${_id}`).json({id: _id});
-  } catch (e) {
-    const status = e.code === 11000 ? 409 : 400;
-    res.status(status).json({error: e.toString()});
+    newUser.save()
+      .then((user) => {
+        res.json({success: true, user: user});
+      });
+  } catch (err) {
+    res.json({success: false, msg: err});
   }
 });
 
