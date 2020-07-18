@@ -1,17 +1,32 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+'use strict';
+require('dotenv').config({path: './.env'});
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const createError = require('http-errors');
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const mongoose = require('mongoose');
+const passport = require('passport');
 
-var app = express();
+const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
+
+/* Load database models */
+require('./models/user');
+
+const PORT = 8080;
+const app = express();
+
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+require('./config/passport')(passport);
+app.use(passport.initialize());
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -19,8 +34,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+const base = '/api/v1';
+
+app.use(`${base}/`, indexRouter);
+app.use(`${base}/auth`, authRouter);
+
+app.use((req, res, next) => {
+  console.log('req.session', req.session);
+  next();
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -38,4 +60,9 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+mongoose.connect(process.env.DATABASE_URL).then(() => {
+  console.info('Database successfully connected on: ', process.env.DATABASE_URL);
+  console.info('Starting express server on port: ', PORT);
+  app.listen(PORT);
+  console.info('Express server successfully started on: ', PORT);
+});
