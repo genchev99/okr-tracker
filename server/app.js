@@ -3,6 +3,7 @@ require('dotenv').config({path: './.env'});
 
 const createError = require('http-errors');
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -10,7 +11,8 @@ const mongoose = require('mongoose');
 
 /* Auth */
 const session = require('express-session');
-const passport = require('passport');
+const passport = require('./passport/setup');
+const MongoStore = require('connect-mongo')(session);
 const LocalStrategy = require('passport-local').Strategy;
 /* Routers */
 const indexRouter = require('./routes/index');
@@ -19,18 +21,20 @@ const authRouter = require('./routes/auth');
 const PORT = 8080;
 const app = express();
 
+app.use(cors());
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-//sessions
-// app.use(
-//   session({
-//     secret: 'fraggle-rock', //pick a random string to make the hash that is generated secure
-//     resave: false, // required
-//     saveUninitialized: false, // required
-//   })
-// );
+app.use(
+  session({
+    secret: "very secret this is",
+    resave: false,
+    saveUninitialized: true,
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session()); // calls serializeUser and deserializeUser

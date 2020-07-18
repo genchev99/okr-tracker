@@ -4,23 +4,23 @@ const collection = 'users';
 
 const schema = new mongoose.Schema({
   firstName: {
-    type: mongoose.Schema.String,
+    type: String,
     default: null,
   },
   lastName: {
-    type: mongoose.Schema.String,
+    type: String,
     default: null,
   },
   email: {
-    type: mongoose.Schema.String,
+    type: String,
     default: null,
   },
   password: {
-    type: mongoose.Schema.String,
+    type: String,
     default: null,
   },
   company: {
-    type: mongoose.Schema.String,
+    type: String,
     default: null,
   },
   invitedBy: {
@@ -42,10 +42,11 @@ const schema = new mongoose.Schema({
 
 schema.methods = {
   checkPassword: password => bcrypt.compareSync(password, this.password),
-  hashPassword: textPassword => bcrypt.hashSync(plainTextPassword, 10),
+  hashPassword: textPassword => bcrypt.hashSync(textPassword, 10),
 };
 
-schema.pre('save', next => {
+schema.pre('save', function (next) {
+  console.log(this);
   if (!this.password)
     throw 'Password cannot be empty';
   else
