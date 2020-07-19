@@ -5,15 +5,15 @@ import ListItemText from '@material-ui/core/ListItemText';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import Group from '@material-ui/icons/Group';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 export const mainListItems = (
   <div>
-    <ListItem button component={Link} to='/members'>
+    <ListItem button component={Link} to='/employees'>
       <ListItemIcon>
-        <Group />
+        <Group/>
       </ListItemIcon>
-      <ListItemText primary="Members" />
+      <ListItemText primary="Employees"/>
     </ListItem>
   </div>
 );
