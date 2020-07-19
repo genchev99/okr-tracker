@@ -10,12 +10,14 @@ import AuthRoute from './routes/AuthRoute';
 import NotAuthRoute from './routes/NotAuthRoute';
 import api from './api';
 import AuthService from './authService';
+import Navigation from './components/navigation';
 
 const authService = new AuthService();
 
 export default class App extends React.Component {
   state = {
     token: localStorage.getItem('token') || null,
+    isAuthenticated: authService.isLoggedIn(),
   };
 
   login = data => {
@@ -26,13 +28,16 @@ export default class App extends React.Component {
         }
 
         authService.setLocalStorage(data);
+
+        this.setState({isAuthenticated: authService.isLoggedIn()});
       }).catch(err => {
-        console.error(err);
-      });
+      console.error(err);
+    });
   };
 
   logout = () => {
     authService.logout();
+    this.setState({isAuthenticated: authService.isLoggedIn()});
   };
 
   register = (payload) => {
@@ -40,16 +45,23 @@ export default class App extends React.Component {
       .then(res => {
         console.log(res);
       });
+
+    this.setState({isAuthenticated: authService.isLoggedIn()});
   };
 
   render() {
+    const {isAuthenticated} = this.state;
+
     return (
       <Router>
-        <AuthContext.Provider value={{...this.state, login: this.login, logout: this.logout, register: this.register, authService,}}>
+        <AuthContext.Provider
+          value={{...this.state, login: this.login, logout: this.logout, register: this.register, authService,}}>
           {/* Todo place the nav here */}
 
           <Switch>
-            <NotAuthRoute isAuthenticated={authService.isLoggedIn()} path="/auth" component={Authenticate}/>
+            <Navigation isAuthenticated={isAuthenticated}>
+              <NotAuthRoute isAuthenticated={isAuthenticated} path="/auth" component={Authenticate}/>
+            </Navigation>
           </Switch>
         </AuthContext.Provider>
       </Router>
