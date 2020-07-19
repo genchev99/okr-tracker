@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,9 +10,10 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AuthContext from '../../../contexts/AuthContext';
+import api from '../../../api';
 
 function Copyright() {
   return (
@@ -47,22 +48,43 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SignUp() {
+export default function SignUp(props) {
   const classes = useStyles();
   const {register} = useContext(AuthContext);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [lockEmail, setLockEmail] = useState(false);
   const [company, setCompany] = useState('');
+  const [lockCompany, setLockCompany] = useState(false);
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    api.auth.preregistered(props.match.params.preregistered)
+      .then(({data}) => {
+        console.log(data)
+        if (data.user) {
+          setFirstName(data.user.firstName);
+          setLastName(data.user.lastName);
+          setEmail(data.user.email);
+          if (data.user.email) {
+            setLockEmail(true);
+          }
+          setCompany(data.user.company);
+          if (data.user.company) {
+            setLockCompany(true);
+          }
+        }
+      })
+  }, []);
 
   return (
     <Container component="main" maxWidth="xs">
-      <CssBaseline />
+      <CssBaseline/>
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
+          <LockOutlinedIcon/>
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign up
@@ -107,6 +129,7 @@ export default function SignUp() {
                 autoComplete="email"
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
+                disabled={lockEmail}
               />
             </Grid>
             <Grid item xs={12}>
@@ -119,6 +142,7 @@ export default function SignUp() {
                 name="company"
                 onChange={(e) => setCompany(e.target.value)}
                 value={company}
+                disabled={lockCompany}
               />
             </Grid>
             <Grid item xs={12}>

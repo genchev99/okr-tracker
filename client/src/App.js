@@ -11,6 +11,7 @@ import NotAuthRoute from './routes/NotAuthRoute';
 import api from './api';
 import AuthService from './authService';
 import Navigation from './components/navigation';
+import Employees from './components/pages/employees';
 
 const authService = new AuthService();
 
@@ -60,7 +61,8 @@ export default class App extends React.Component {
 
           <Switch>
             <Navigation isAuthenticated={isAuthenticated}>
-              <NotAuthRoute isAuthenticated={isAuthenticated} path="/auth" component={Authenticate}/>
+              <NotAuthRoute isAuthenticated={isAuthenticated} path='/auth' component={Authenticate}/>
+              <AuthRoute isAuthenticated={isAuthenticated}  path='/employees' component={Employees}/>
             </Navigation>
           </Switch>
         </AuthContext.Provider>

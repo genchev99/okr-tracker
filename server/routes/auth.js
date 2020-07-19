@@ -17,6 +17,13 @@ router.post('/sign-in', function (req, res, next) {
         res.status(401).json({success: false, msg: 'User could not be found!'});
       }
 
+      if (!user.activated) {
+        return res.status(401).json({
+          success: false,
+          msg: 'The account is not activated! Please fallow the link in your email inbox.'
+        })
+      }
+
       // Function defined at bottom of app.js
       const isValid = utils.validPassword(req.body.password, user.hash, user.salt);
 
@@ -34,26 +41,50 @@ router.post('/sign-in', function (req, res, next) {
 });
 
 // Register a new user
-router.post('/sign-up', function (req, res, next) {
+router.post('/sign-up', async function (req, res, next) {
   const saltHash = utils.genPassword(req.body.password);
 
   const salt = saltHash.salt;
   const hash = saltHash.hash;
   delete req.body.password;
 
-  const newUser = new User({
-    ...req.body,
-    hash: hash,
-    salt: salt
-  });
 
   try {
-    newUser.save()
-      .then((user) => {
-        res.json({success: true, user: user});
-      });
-  } catch (err) {
-    res.json({success: false, msg: err});
+    if (await User.findOne({email: req.body.email, activated: true})) {
+      res.status(400).json({success: false, msg: 'Account already exists'});
+    }
+
+    const user = await User.findOneAndUpdate({
+      email: req.body.email,
+      company: req.body.company,
+    }, {
+      ...req.body,
+      hash: hash,
+      salt: salt,
+      activated: true,
+    }, {
+      upsert: true,
+      new: true,
+    });
+
+    res.json({success: true, user: user});
+  } catch (e) {
+    res.json({success: false, msg: e});
+  }
+});
+
+router.post('/pre-registered', async (req, res) => {
+  try {
+    const user = await User.findOne({_id: req.body.id, activated: false});
+
+    console.log(user);
+    if (user) {
+      res.json({success: true, user});
+    } else {
+      res.json({success: false, msg: 'User cannot be found!'})
+    }
+  } catch (e) {
+    res.json({success: false, msg: 'Invalid id!'});
   }
 });
 

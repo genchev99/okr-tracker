@@ -1,7 +1,10 @@
 import * as moment from "moment";
+import axios from "axios";
 
 export default class AuthService {
-  constructor() {}
+  constructor() {
+    axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
+  }
 
   setLocalStorage(responseObj) {
     // Adds the expiration time defined on the JWT to the current moment
@@ -9,11 +12,15 @@ export default class AuthService {
 
     localStorage.setItem('token', responseObj.token);
     localStorage.setItem("expires_at", JSON.stringify(expiresAt.valueOf()) );
+
+    axios.defaults.headers.common['Authorization'] = responseObj.token;
   }
 
   logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("expires_at");
+
+    delete axios.defaults.headers.common['Authorization'];
   }
 
   isLoggedIn() {
