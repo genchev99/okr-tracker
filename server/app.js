@@ -13,6 +13,7 @@ const passport = require('passport');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const employeesRouter = require('./routes/employees');
+const companyRouter = require('./routes/company');
 
 /* Load database models */
 require('./models/user');
@@ -40,6 +41,7 @@ const base = '/api/v1';
 app.use(`${base}/`, indexRouter);
 app.use(`${base}/auth`, authRouter);
 app.use(`${base}/employees`, employeesRouter);
+app.use(`${base}/company/`, companyRouter);
 
 app.use((req, res, next) => {
   console.log('req.session', req.session);

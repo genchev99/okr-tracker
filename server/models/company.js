@@ -8,7 +8,10 @@ const schema = new mongoose.Schema({
   },
   departments: {
     type: Array,
-    default: ['Executives'],
+    default: [{
+      name: 'executives',
+      description: 'Executive managers hold executive powers delegated to them with and by authority of a board of directors.'
+    }],
   },
 });
 

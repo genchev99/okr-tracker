@@ -10,5 +10,9 @@ export default {
   employees: {
     get: () => axios.get(endpoints.EMPLOYEES),
     enroll: payload => axios.post(endpoints.EMPLOYEES, payload),
-  }
+  },
+  departments: {
+    get: () => axios.get(endpoints.DEPARTMENTS),
+    create: (department) => axios.post(endpoints.DEPARTMENTS, {...department}),
+  },
 }

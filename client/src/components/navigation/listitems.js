@@ -6,6 +6,7 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import Group from '@material-ui/icons/Group';
 import {Link} from 'react-router-dom';
+import WorkIcon from '@material-ui/icons/Work';
 
 export const mainListItems = (
   <div>
@@ -14,6 +15,12 @@ export const mainListItems = (
         <Group/>
       </ListItemIcon>
       <ListItemText primary="Employees"/>
+    </ListItem>
+    <ListItem button component={Link} to='/departments'>
+      <ListItemIcon>
+        <WorkIcon/>
+      </ListItemIcon>
+      <ListItemText primary="Departments"/>
     </ListItem>
   </div>
 );

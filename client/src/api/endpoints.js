@@ -4,5 +4,6 @@ export default {
   LOGIN: `${baseUrl}/auth/sign-in`,
   REGISTER: `${baseUrl}/auth/sign-up`,
   PREREGISTERED: `${baseUrl}/auth/pre-registered`,
-  EMPLOYEES: `${baseUrl}/employees`
+  EMPLOYEES: `${baseUrl}/employees`,
+  DEPARTMENTS: `${baseUrl}/company/departments`,
 };
