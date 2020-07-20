@@ -17,7 +17,7 @@ const Authenticate = () => {
         <Route path={`${match.path}/sign-in`}>
           <SignIn />
         </Route>
-        <Route path={`${match.path}/sign-up/:preregistered`} component={SignUp}/>
+        <Route path={`${match.path}/sign-up/:preregistered?`} component={SignUp}/>
         <Route path={`${match.path}/forgot-password`}>
           <ForgotPassword />
         </Route>

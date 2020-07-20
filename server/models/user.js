@@ -24,16 +24,12 @@ const schema = new mongoose.Schema({
     default: null,
   },
   company: {
-    type: String,
-    default: null,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'companies',
   },
-  invitedBy: {
+  department: {
     type: String,
-    default: null,
-  },
-  status: {
-    type: String,
-    default: null,
+    default: 'Executives'
   },
   activated: {
     type: Boolean,
@@ -43,21 +39,5 @@ const schema = new mongoose.Schema({
   timestamps: true,
   collection,
 });
-
-// schema.methods = {
-//   checkPassword: password => bcrypt.compareSync(password, this.password),
-//   hashPassword: textPassword => bcrypt.hashSync(textPassword, 10),
-// };
-//
-// schema.pre('save', function (next) {
-//   console.log(this);
-//   if (!this.password)
-//     throw 'Password cannot be empty';
-//   else
-//     this.password = this.hashPassword(this.password);
-//
-//   next();
-// });
-
 
 module.exports = mongoose.model(collection, schema);

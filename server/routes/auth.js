@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const router = require('express').Router();
 const User = require('../models/user');
+const Company = require('../models/company');
 const passport = require('passport');
 const utils = require('../lib/utils');
 
@@ -54,14 +55,26 @@ router.post('/sign-up', async function (req, res, next) {
       res.status(400).json({success: false, msg: 'Account already exists'});
     }
 
+    let company = await Company.findOne({name: req.body.company});
+
+    if (company) {
+      if (! await User.findOne({email: req.body.email, activated: false, company})) {
+        res.status(400).json({success: false, msg: 'This company name is already taken'});
+      }
+    } else {
+      company = await Company.create({name: req.body.company});
+    }
+
+    // const company = await Company.create({name: req.body.company});
+
     const user = await User.findOneAndUpdate({
       email: req.body.email,
-      company: req.body.company,
     }, {
       ...req.body,
       hash: hash,
       salt: salt,
       activated: true,
+      company,
     }, {
       upsert: true,
       new: true,
@@ -69,16 +82,16 @@ router.post('/sign-up', async function (req, res, next) {
 
     res.json({success: true, user: user});
   } catch (e) {
-    res.json({success: false, msg: e});
+    res.json({success: false, msg: e.toString()});
   }
 });
 
 router.post('/pre-registered', async (req, res) => {
   try {
-    const user = await User.findOne({_id: req.body.id, activated: false});
+    const user = (await User.findOne({_id: req.body.id, activated: false})).toObject();
 
-    console.log(user);
     if (user) {
+      user.company = (await Company.findOne({_id: user.company})).name;
       res.json({success: true, user});
     } else {
       res.json({success: false, msg: 'User cannot be found!'})
