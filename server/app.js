@@ -14,6 +14,7 @@ const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const employeesRouter = require('./routes/employees');
 const companyRouter = require('./routes/company');
+const departmentsRouter = require('./routes/departments');
 
 /* Load database models */
 require('./models/user');
@@ -42,6 +43,7 @@ app.use(`${base}/`, indexRouter);
 app.use(`${base}/auth`, authRouter);
 app.use(`${base}/employees`, employeesRouter);
 app.use(`${base}/company/`, companyRouter);
+app.use(`${base}/departments/`, departmentsRouter);
 
 app.use((req, res, next) => {
   console.log('req.session', req.session);

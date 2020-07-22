@@ -6,17 +6,10 @@ const schema = new mongoose.Schema({
     type: String,
     unique: true,
   },
-  departments: {
-    type: Array,
-    default: [{
-      name: 'executives',
-      description: 'Executive managers hold executive powers delegated to them with and by authority of a board of directors.'
-    }],
-  },
-  objectives: {
-    type: Array,
-    default: [],
-  },
+  departments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    Ref: 'departments'
+  }],
 });
 
 module.exports = mongoose.model(collection, schema);

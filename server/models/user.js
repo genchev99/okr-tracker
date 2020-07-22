@@ -28,8 +28,8 @@ const schema = new mongoose.Schema({
     ref: 'companies',
   },
   department: {
-    type: String,
-    default: 'Executives'
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'departments',
   },
   activated: {
     type: Boolean,

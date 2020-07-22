@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Company = require('../models/company');
 const passport = require('passport');
 const utils = require('../lib/utils');
+const Department = require('../models/department');
 
 router.get('/protected', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   res.status(200).json({success: true, msg: 'You are successfully authenticated to this route!', ...req.user});
@@ -55,17 +56,29 @@ router.post('/sign-up', async function (req, res, next) {
       res.status(400).json({success: false, msg: 'Account already exists'});
     }
 
-    let company = await Company.findOne({name: req.body.company});
+    let company = await Company.findOne({name: req.body.company}).populate('departments');
 
     if (company) {
-      if (! await User.findOne({email: req.body.email, activated: false, company})) {
+      if (!await User.findOne({email: req.body.email, activated: false,})) {
         res.status(400).json({success: false, msg: 'This company name is already taken'});
       }
     } else {
       company = await Company.create({name: req.body.company});
     }
 
-    // const company = await Company.create({name: req.body.company});
+    let department;
+    if (!company.departments.length) {
+      department = await Department.create({
+        name: 'executives',
+        description: 'Executive managers hold executive powers delegated to them with and by authority of a board of directors.',
+        company: company,
+      });
+
+      company.departments.push(department._id);
+      await company.save();
+    } else {
+      department = company.departments.filter(({name}) => req.body.department || 'executives')[0];
+    }
 
     const user = await User.findOneAndUpdate({
       email: req.body.email,
@@ -74,14 +87,19 @@ router.post('/sign-up', async function (req, res, next) {
       hash: hash,
       salt: salt,
       activated: true,
-      company,
+      department: department._id,
+      company: company._id,
     }, {
       upsert: true,
       new: true,
     });
 
+    department.employees.push(user._id);
+    await department.save();
+
     res.json({success: true, user: user});
   } catch (e) {
+    console.error(e);
     res.json({success: false, msg: e.toString()});
   }
 });

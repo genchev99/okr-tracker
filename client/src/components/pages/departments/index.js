@@ -31,37 +31,16 @@ const Departments = () => {
         data={departments}
         editable={{
           onRowAdd: async (newData) => {
-            console.log(newData);
             await api.departments.create(newData);
-            fetchDepartments()
+            fetchDepartments();
           },
-          onRowUpdate: (newData, oldData) => {
-            // new Promise((resolve) => {
-            //   setTimeout(() => {
-            //     resolve();
-            //     if (oldData) {
-            //       setState((prevState) => {
-            //         const data = [...prevState.data];
-            //         data[data.indexOf(oldData)] = newData;
-            //         return { ...prevState, data };
-            //       });
-            //     }
-            //   }, 600);
-            // })
-            console.log(newData, oldData);
+          onRowUpdate: async (newData, oldData) => {
+            await api.departments.update(oldData._id, newData);
+            fetchDepartments();
           },
-          onRowDelete: (oldData) => {
-            console.log(oldData);
-            // new Promise((resolve) => {
-            //   setTimeout(() => {
-            //     resolve();
-            //     setState((prevState) => {
-            //       const data = [...prevState.data];
-            //       data.splice(data.indexOf(oldData), 1);
-            //       return { ...prevState, data };
-            //     });
-            //   }, 600);
-            // }),
+          onRowDelete: async (oldData) => {
+            await api.departments.delete(oldData._id);
+            fetchDepartments();
           }
         }}
       />

@@ -5,6 +5,6 @@ export default {
   REGISTER: `${baseUrl}/auth/sign-up`,
   PREREGISTERED: `${baseUrl}/auth/pre-registered`,
   EMPLOYEES: `${baseUrl}/employees`,
-  DEPARTMENTS: `${baseUrl}/company/departments`,
+  DEPARTMENTS: `${baseUrl}/departments`,
   OBJECTIVES: `${baseUrl}/company/objectives`,
 };
