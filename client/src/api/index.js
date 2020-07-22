@@ -15,4 +15,8 @@ export default {
     get: () => axios.get(endpoints.DEPARTMENTS),
     create: (department) => axios.post(endpoints.DEPARTMENTS, {...department}),
   },
+  objectives: {
+    get: () => axios.get(endpoints.OBJECTIVES),
+    create: (objective) => axios.post(endpoints.OBJECTIVES, {...objective}),
+  },
 }

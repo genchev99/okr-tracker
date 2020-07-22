@@ -7,6 +7,7 @@ import LayersIcon from '@material-ui/icons/Layers';
 import Group from '@material-ui/icons/Group';
 import {Link} from 'react-router-dom';
 import WorkIcon from '@material-ui/icons/Work';
+import AddBoxIcon from '@material-ui/icons/AddBox';
 
 export const mainListItems = (
   <div>
@@ -21,6 +22,12 @@ export const mainListItems = (
         <WorkIcon/>
       </ListItemIcon>
       <ListItemText primary="Departments"/>
+    </ListItem>
+    <ListItem button component={Link} to='/objectives'>
+      <ListItemIcon>
+        <AddBoxIcon/>
+      </ListItemIcon>
+      <ListItemText primary="Objectives"/>
     </ListItem>
   </div>
 );
