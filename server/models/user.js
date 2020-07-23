@@ -31,6 +31,10 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'departments',
   },
+  role: {
+    type: String,
+    default: 'employee',
+  },
   activated: {
     type: Boolean,
     default: false,

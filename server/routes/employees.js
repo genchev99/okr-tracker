@@ -6,12 +6,22 @@ const passport = require('passport');
 const utils = require('../lib/utils');
 
 router.get('/', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
-  res.status(200).json({employees: await User.find({company: req.user.company})});
+  // console.log(await User.find({company: req.user.company}).populate('department'));
+
+  res.status(200).json({employees: await User.find({company: req.user.company}).populate('department')});
 });
 
 router.post('/', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
   try {
-    const newUser = await User.create({...req.body, company: req.user.company, activated: false});
+    const {department: departmentName} = req.body;
+
+    const department = await Department.findOne({name: departmentName, company: req.user.company});
+
+    if (!department) {
+      return res.status(400).json({error: `Invalid department name: ${departmentName}`});
+    }
+
+    const newUser = await User.create({...req.body, company: req.user.company, activated: false, department: department._id});
     res.status(201).json({newUser});
   } catch (e) {
     const status = e.code === 11000 ? 409 : 400;
@@ -22,11 +32,11 @@ router.post('/', passport.authenticate('jwt', {session: false}), async (req, res
 router.put('/:employeeId', passport.authenticate('jwt', {session: false}), async (req, res) => {
   const employeeId = req.params.employeeId;
   try {
-    const {firstName, lastName, email, role, department: departmentName} = req.body;
-    const department = await Department.findOne({name: departmentName, company: req.user.company});
+    const {firstName, lastName, email, role, department: {name}} = req.body;
+    const department = await Department.findOne({name, company: req.user.company});
 
     if (!department) {
-      return res.status(400).json({error: `Invalid department name: ${departmentName}`});
+      return res.status(400).json({error: `Invalid department name: ${name}`});
     }
 
     const employeeById = await User.findOneAndUpdate({_id: employeeId}, {firstName, lastName, department: department._id, email, role}, {new: true, runValidators: true});

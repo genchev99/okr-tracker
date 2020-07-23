@@ -86,7 +86,7 @@ const Employees = () => {
           {title: 'Last name', field: 'lastName'},
           {title: 'Email', field: 'email'},
           {title: 'Role', field: 'role', lookup: {root: 'Root', admin: 'Admin', 'teamLead': 'TeamLead', employee: 'Employee'}},
-          {title: 'Department', field: 'department', lookup: { ...departments },},
+          {title: 'Department', field: 'department.name', lookup: { ...departments },},
         ]}
         data={employees}
         editable={{
@@ -95,6 +95,7 @@ const Employees = () => {
             fetchEmployees()
           },
           onRowUpdate: async (newData, oldData) => {
+            console.log(newData);
             await api.employees.update(oldData._id, newData);
             fetchEmployees();
           },
