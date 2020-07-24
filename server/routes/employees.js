@@ -13,15 +13,21 @@ router.get('/', passport.authenticate('jwt', {session: false}), async (req, res,
 
 router.post('/', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
   try {
-    const {department: departmentName} = req.body;
+    const {department: {name}} = req.body;
 
-    const department = await Department.findOne({name: departmentName, company: req.user.company});
+    const department = await Department.findOne({name, company: req.user.company});
 
     if (!department) {
-      return res.status(400).json({error: `Invalid department name: ${departmentName}`});
+      return res.status(400).json({error: `Invalid department name: ${name}`});
     }
 
-    const newUser = await User.create({...req.body, company: req.user.company, activated: false, department: department._id});
+    const newUser = await User.create({
+      ...req.body,
+      company: req.user.company,
+      activated: false,
+      department: department._id
+    });
+
     res.status(201).json({newUser});
   } catch (e) {
     const status = e.code === 11000 ? 409 : 400;
