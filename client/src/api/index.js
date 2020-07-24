@@ -22,5 +22,13 @@ export default {
   objectives: {
     get: () => axios.get(endpoints.OBJECTIVES),
     create: (objective) => axios.post(endpoints.OBJECTIVES, {...objective}),
+    delete: (objectiveId) => axios.delete(`${endpoints.OBJECTIVES}/${objectiveId}`),
+    archive: (objectiveId) => axios.put(`${endpoints.OBJECTIVES}/${objectiveId}`),
   },
+  keyResults: {
+    get: (objectiveId) => axios.get(`${endpoints.OBJECTIVES}/${objectiveId}/key-results`),
+    create: (objectiveId, keyResult) => axios.post(`${endpoints.OBJECTIVES}/${objectiveId}/key-results`, {...keyResult}),
+    delete: (objectiveId, keyResultId) => axios.delete(`${endpoints.OBJECTIVES}/${objectiveId}/key-results/${keyResultId}`),
+    update: (objectiveId, keyResultId, newValue) => axios.put(`${endpoints.OBJECTIVES}/${objectiveId}/key-results/${keyResultId}`, {newValue}),
+  }
 }

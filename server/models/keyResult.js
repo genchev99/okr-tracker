@@ -5,16 +5,21 @@ const schema = new mongoose.Schema({
   description: String,
   objective: {
     type: mongoose.Schema.Types.ObjectId,
-    Ref: 'objectives'
+    ref: 'objectives'
   },
   range: {
-    type: String,
-    min: Number,
+    min: {
+      type: Number,
+      default: 0,
+    },
     max: Number,
-    current: Number,
+    current: {
+      type: Number,
+      default: 0,
+    },
   }
 });
 
-schema.index({title: 1, department: 1}, {unique: true});
+schema.index({title: 1, objective: 1}, {unique: true});
 
 module.exports = mongoose.model('key-results', schema);

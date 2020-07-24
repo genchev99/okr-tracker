@@ -16,6 +16,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
+import CreateKeyResult from "./CreateKeyResult";
+import FeaturedPost from "../../FeaturedPost";
 
 
 const useStyles = makeStyles(theme => ({
@@ -27,7 +29,7 @@ const useStyles = makeStyles(theme => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: '#ff1744',
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -52,8 +54,8 @@ const Objectives = () => {
   const [existingDepartments, setExistingDepartments] = useState([]);
   const [objectives, setObjectives] = useState([]);
 
-  const getDepartments = () => {
-    api.departments.get().then(({data}) => {
+  const getDepartments = async () => {
+    return await api.departments.get().then(({data}) => {
       setExistingDepartments(data.departments);
     }).catch(err => {
       console.error(err);
@@ -76,17 +78,34 @@ const Objectives = () => {
   };
 
   useEffect(() => {
-    getDepartments();
-    getObjectives();
+    getDepartments().then(() => getObjectives());
   }, []);
 
   return (
     <React.Fragment>
       <Container component="main" maxWidth="md" style={{'paddingTop': '30px'}}>
         <CssBaseline/>
+        <Grid container spacing={4}>
+        <FeaturedPost post={{
+          title: 'Objectives',
+          date: 'direction',
+          description:
+            'Describes where you would like to go.',
+          image: 'https://www.colorhexa.com/ff1744.png',
+          imageText: 'Objectives',
+        }}/>
+        <FeaturedPost post={{
+          title: 'Key results',
+          date: 'points',
+          description:
+            'Describes how you will get there.',
+          image: 'https://www.colorhexa.com/ffd64d.png',
+          imageText: 'Key results',
+        }}/>
+        </Grid>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
-            <AddBoxIcon/>
+            <AddBoxIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Create new objective
@@ -140,8 +159,9 @@ const Objectives = () => {
             <Button
               fullWidth
               variant="contained"
-              color="primary"
+              // color="primary"
               className={classes.submit}
+              style={{backgroundColor: '#ff1744', color: 'white'}}
               onClick={() => {
                 createObjective({
                   title,
@@ -158,9 +178,8 @@ const Objectives = () => {
         </div>
       </Container>
       {objectives.map(objective => (<Container component="main" maxWidth="md" style={{'paddingTop': '10px'}}>
-        <Objective objective={objective}/>
+        <Objective getObjectives={getObjectives} objective={objective}/>
       </Container>))}
-
     </React.Fragment>
   );
 };

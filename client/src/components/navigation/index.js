@@ -107,6 +107,10 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: '#ff1744',
+  }
 }));
 
 export default function Nav(props) {
@@ -158,7 +162,7 @@ export default function Nav(props) {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <AccountCircle/>
+                <AccountCircle style={{ color: '#ff1744' }}/>
               </IconButton>
               <Menu
                 id="menu-appbar"

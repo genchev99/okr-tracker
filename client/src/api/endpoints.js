@@ -6,5 +6,5 @@ export default {
   PREREGISTERED: `${baseUrl}/auth/pre-registered`,
   EMPLOYEES: `${baseUrl}/employees`,
   DEPARTMENTS: `${baseUrl}/departments`,
-  OBJECTIVES: `${baseUrl}/company/objectives`,
+  OBJECTIVES: `${baseUrl}/objectives`,
 };

@@ -1,5 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Accordion from '@material-ui/core/ExpansionPanel';
 import AccordionDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -10,6 +10,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
+import CreateKeyResult from "./CreateKeyResult";
+import api from '../../../api';
+import KeyResult from "./KeyResult";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
+  },
+  desc: {
+    fontSize: theme.typography.pxToRem(20),
   },
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
@@ -26,9 +32,6 @@ const useStyles = makeStyles((theme) => ({
     verticalAlign: 'bottom',
     height: 20,
     width: 20,
-  },
-  details: {
-    alignItems: 'center',
   },
   column: {
     flexBasis: '33.33%',
@@ -44,16 +47,31 @@ const useStyles = makeStyles((theme) => ({
       textDecoration: 'underline',
     },
   },
+  details: {
+    alignItems: 'center',
+  },
 }));
 
-export default function DetailedAccordion({objective: {title, description, department, kr} = {}}) {
+export default function DetailedAccordion({getObjectives, objective: {_id, title, description, department, kr} = {}}) {
   const classes = useStyles();
+
+  const [keyResults, setKeyResults] = useState([]);
+
+  const getKeyResults = async () => {
+    return await api.keyResults.get(_id)
+      .then(({data}) => setKeyResults(data.keyResults || []))
+      .catch(err => console.error(err))
+  };
+
+  useEffect(() => {
+    getKeyResults();
+  }, []);
 
   return (
     <div className={classes.root}>
       <Accordion>
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
+          expandIcon={<ExpandMoreIcon/>}
           aria-controls="panel1c-content"
           id="panel1c-header"
         >
@@ -61,29 +79,36 @@ export default function DetailedAccordion({objective: {title, description, depar
             <Typography className={classes.heading}>{title}</Typography>
           </div>
           <div className={classes.column}>
-            <Typography className={classes.secondaryHeading}>{department}</Typography>
+            <Typography className={classes.secondaryHeading}>{department.name}</Typography>
           </div>
         </AccordionSummary>
         <AccordionDetails className={classes.details}>
-          <Typography className={classes.heading}>{description}</Typography>
-          <div className={classes.column}>
-            <Chip label="Barbados" onDelete={() => {}} />
-          </div>
-          <div className={clsx(classes.column, classes.helper)}>
-            <Typography variant="caption">
-              Select your destination of choice
-              <br />
-              <a href="#secondary-heading-and-columns" className={classes.link}>
-                Learn more
-              </a>
-            </Typography>
+          <div style={{'width': '100%'}}>
+            <Typography style={{marginBottom: '15px'}} className={classes.desc}>{description} </Typography>
+            <Divider/>
+            {keyResults.map(res => (
+              <React.Fragment>
+                <KeyResult getKeyResults={getKeyResults} objectId={_id} _id={res._id} description={res.description} range={res.range} title={res.title}/>
+                <Divider/>
+              </React.Fragment>
+            ))}
+            <CreateKeyResult objective={_id} getKeyResults={getKeyResults}/>
           </div>
         </AccordionDetails>
-        <Divider />
+        <Divider/>
         <AccordionActions>
-          <Button size="small">Cancel</Button>
-          <Button size="small" color="primary">
-            Save
+          <Button
+            size="small"
+            onClick={() => api.objectives.delete(_id).then(() => getObjectives())}
+          >
+            Delete
+          </Button>
+          <Button
+            size="small"
+            color="primary"
+            onClick={() => api.objectives.archive(_id).then(() => getObjectives())}
+          >
+            Archive
           </Button>
         </AccordionActions>
       </Accordion>

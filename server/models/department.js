@@ -5,15 +5,15 @@ const schema = new mongoose.Schema({
   description: String,
   company: {
     type: mongoose.Schema.Types.ObjectId,
-    Ref: 'companies'
+    ref: 'companies'
   },
   objectives: [{
     type: mongoose.Schema.Types.ObjectId,
-    Ref: 'objectives'
+    ref: 'objectives'
   }],
   employees: [{
     type: mongoose.Schema.Types.ObjectId,
-    Ref: 'users'
+    ref: 'users'
   }],
 });
 

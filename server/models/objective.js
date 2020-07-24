@@ -5,12 +5,16 @@ const schema = new mongoose.Schema({
   description: String,
   department: {
     type: mongoose.Schema.Types.ObjectId,
-    Ref: 'departments'
+    ref: 'departments'
   },
-  keyResults: [{
+  createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    Ref: 'key-results'
-  }]
+    ref: 'users'
+  },
+  archived: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 schema.index({title: 1, department: 1}, {unique: true});

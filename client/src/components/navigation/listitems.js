@@ -13,19 +13,19 @@ export const mainListItems = (
   <div>
     <ListItem button component={Link} to='/employees'>
       <ListItemIcon>
-        <Group/>
+        <Group style={{ color: '#ff1744' }}/>
       </ListItemIcon>
       <ListItemText primary="Employees"/>
     </ListItem>
     <ListItem button component={Link} to='/departments'>
       <ListItemIcon>
-        <WorkIcon/>
+        <WorkIcon style={{ color: '#ff1744' }}/>
       </ListItemIcon>
       <ListItemText primary="Departments"/>
     </ListItem>
     <ListItem button component={Link} to='/objectives'>
       <ListItemIcon>
-        <AddBoxIcon/>
+        <AddBoxIcon style={{ color: '#ff1744' }}/>
       </ListItemIcon>
       <ListItemText primary="Objectives"/>
     </ListItem>

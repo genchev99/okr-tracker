@@ -15,6 +15,7 @@ const authRouter = require('./routes/auth');
 const employeesRouter = require('./routes/employees');
 const companyRouter = require('./routes/company');
 const departmentsRouter = require('./routes/departments');
+const objectivesRouter = require('./routes/objectives');
 
 /* Load database models */
 require('./models/user');
@@ -44,6 +45,7 @@ app.use(`${base}/auth`, authRouter);
 app.use(`${base}/employees`, employeesRouter);
 app.use(`${base}/company/`, companyRouter);
 app.use(`${base}/departments/`, departmentsRouter);
+app.use(`${base}/objectives/`, objectivesRouter);
 
 app.use((req, res, next) => {
   console.log('req.session', req.session);

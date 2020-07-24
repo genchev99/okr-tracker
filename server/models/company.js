@@ -8,7 +8,7 @@ const schema = new mongoose.Schema({
   },
   departments: [{
     type: mongoose.Schema.Types.ObjectId,
-    Ref: 'departments'
+    ref: 'departments'
   }],
 });
 
