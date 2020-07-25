@@ -97,6 +97,7 @@ export default function KeyResult({getKeyResults, objectId, _id, title, descript
           min={min}
           max={max}
           valueLabelDisplay="auto"
+          style={{color: '#ff1744'}}
           marks={[
             {
               value: min,
