@@ -12,8 +12,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddCircleIcon from '@material-ui/icons/Add';
 import api from '../../../api';
+import SnackbarContext from "../../../contexts/SnackbarContext";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -36,6 +37,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function CreateKeyResult({objective, getKeyResults}) {
+  const {error, success, warn} = useContext(SnackbarContext);
+
   const classes = useStyles();
 
   const [title, setTitle] = useState('');
@@ -112,7 +115,8 @@ export default function CreateKeyResult({objective, getKeyResults}) {
               title,
               description,
               quantity,
-            })
+            }).then(() => success('Key result was successfully created!'))
+              .catch(err => error(err.toString()))
               .then(() => getKeyResults())
               .finally(() => clearFields())
             }

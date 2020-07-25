@@ -57,9 +57,9 @@ router.post('/sign-up', async function (req, res, next) {
     }
 
     let company = await Company.findOne({name: req.body.company}).populate('departments');
-
+    const preRegistered = await User.findOne({email: req.body.email, activated: false,});
     if (company) {
-      if (!await User.findOne({email: req.body.email, activated: false,})) {
+      if (!preRegistered) {
         res.status(400).json({success: false, msg: 'This company name is already taken'});
       }
     } else {
@@ -89,6 +89,7 @@ router.post('/sign-up', async function (req, res, next) {
       activated: true,
       department: department._id,
       company: company._id,
+      role: preRegistered && preRegistered.role || 'root',
     }, {
       upsert: true,
       new: true,

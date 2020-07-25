@@ -1,11 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import MaterialTable from 'material-table';
 import api from '../../../api';
 import Container from "@material-ui/core/Container";
 import FeaturedPost from "../../FeaturedPost";
 import Grid from "@material-ui/core/Grid";
+import SnackbarContext from "../../../contexts/SnackbarContext";
 
 const Departments = () => {
+  const {error, success, warn} = useContext(SnackbarContext);
+
   const [departments, setDepartments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,15 +56,35 @@ const Departments = () => {
         data={departments}
         editable={{
           onRowAdd: async (newData) => {
-            await api.departments.create(newData);
+            try {
+              await api.departments.create(newData);
+
+              success('Department was successfully created!');
+            } catch (e) {
+              error(e.toString());
+            }
+
             fetchDepartments();
           },
           onRowUpdate: async (newData, oldData) => {
-            await api.departments.update(oldData._id, newData);
+            try {
+              await api.departments.update(oldData._id, newData);
+
+              success('Department was successfully updated!');
+            } catch (e) {
+              error(e.toString());
+            }
+
             fetchDepartments();
           },
           onRowDelete: async (oldData) => {
-            await api.departments.delete(oldData._id);
+            try {
+              await api.departments.delete(oldData._id);
+              success('Department was successfully deleted!');
+            } catch (e) {
+              error(e.toString());
+            }
+
             fetchDepartments();
           }
         }}
