@@ -6,7 +6,6 @@ const Department = require('../models/department');
 const passport = require('passport');
 
 router.get('/', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
-  console.log((await Department.find({company: req.user.company}).populate('company')));
   res.status(200).json({departments: (await Department.find({company: req.user.company}).populate('company'))});
 });
 

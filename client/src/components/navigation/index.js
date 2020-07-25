@@ -16,7 +16,7 @@ import {Link} from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import {mainListItems} from './listitems';
+import {mainListItems, secondaryListItems} from './listitems';
 import MenuItem from "@material-ui/core/MenuItem";
 import {AccountCircle} from "@material-ui/icons";
 import Menu from "@material-ui/core/Menu";
@@ -209,6 +209,8 @@ export default function Nav(props) {
         </div>
         <Divider/>
         <List>{mainListItems}</List>
+        <Divider />
+        <List>{secondaryListItems}</List>
       </Drawer>
       <main className={classes.content} style={{marginTop: '50px'}}>
         {props.children}

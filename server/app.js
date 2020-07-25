@@ -13,7 +13,7 @@ const passport = require('passport');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const employeesRouter = require('./routes/employees');
-const companyRouter = require('./routes/company');
+const statisticsRouter = require('./routes/statistics');
 const departmentsRouter = require('./routes/departments');
 const objectivesRouter = require('./routes/objectives');
 
@@ -43,14 +43,14 @@ const base = '/api/v1';
 app.use(`${base}/`, indexRouter);
 app.use(`${base}/auth`, authRouter);
 app.use(`${base}/employees`, employeesRouter);
-app.use(`${base}/company/`, companyRouter);
+app.use(`${base}/statistics/`, statisticsRouter);
 app.use(`${base}/departments/`, departmentsRouter);
 app.use(`${base}/objectives/`, objectivesRouter);
 
-app.use((req, res, next) => {
-  console.log('req.session', req.session);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log('req.session', req.session);
+//   next();
+// });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

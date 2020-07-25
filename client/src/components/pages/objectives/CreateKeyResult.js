@@ -42,6 +42,12 @@ export default function CreateKeyResult({objective, getKeyResults}) {
   const [description, setDescription] = useState('');
   const [quantity, setQuantity] = useState(100);
 
+  const clearFields = () => {
+    setTitle('');
+    setDescription('');
+    setQuantity(100);
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline/>
@@ -106,7 +112,10 @@ export default function CreateKeyResult({objective, getKeyResults}) {
               title,
               description,
               quantity,
-            }).then(() => getKeyResults())}
+            })
+              .then(() => getKeyResults())
+              .finally(() => clearFields())
+            }
           >
             Create
           </Button>

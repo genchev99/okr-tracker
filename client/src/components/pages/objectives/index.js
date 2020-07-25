@@ -54,6 +54,13 @@ const Objectives = () => {
   const [existingDepartments, setExistingDepartments] = useState([]);
   const [objectives, setObjectives] = useState([]);
 
+  const clearFields = () => {
+    setTitle('');
+    setDepartment('');
+    setDescription('');
+  }
+
+
   const getDepartments = async () => {
     return await api.departments.get().then(({data}) => {
       setExistingDepartments(data.departments);
@@ -86,26 +93,26 @@ const Objectives = () => {
       <Container component="main" maxWidth="md" style={{'paddingTop': '30px'}}>
         <CssBaseline/>
         <Grid container spacing={4}>
-        <FeaturedPost post={{
-          title: 'Objectives',
-          date: 'direction',
-          description:
-            'Describes where you would like to go.',
-          image: 'https://www.colorhexa.com/ff1744.png',
-          imageText: 'Objectives',
-        }}/>
-        <FeaturedPost post={{
-          title: 'Key results',
-          date: 'points',
-          description:
-            'Describes how you will get there.',
-          image: 'https://www.colorhexa.com/ffd64d.png',
-          imageText: 'Key results',
-        }}/>
+          <FeaturedPost post={{
+            title: 'Objectives',
+            date: 'direction',
+            description:
+              'Describes where you would like to go.',
+            image: 'https://www.colorhexa.com/ff1744.png',
+            imageText: 'Objectives',
+          }}/>
+          <FeaturedPost post={{
+            title: 'Key results',
+            date: 'points',
+            description:
+              'Describes how you will get there.',
+            image: 'https://www.colorhexa.com/ffd64d.png',
+            imageText: 'Key results',
+          }}/>
         </Grid>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
-            <AddBoxIcon />
+            <AddBoxIcon/>
           </Avatar>
           <Typography component="h1" variant="h5">
             Create new objective
@@ -169,7 +176,8 @@ const Objectives = () => {
                   department,
                 })
                   .catch(err => console.error(err))
-                  .then(() => getObjectives());
+                  .then(() => getObjectives())
+                  .finally(() => clearFields());
               }}
             >
               Create

@@ -165,13 +165,16 @@ export default function SignUp(props) {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={() => register({
-              firstName,
-              lastName,
-              email,
-              company,
-              password,
-            })}
+            onClick={() => {
+              register({
+                firstName,
+                lastName,
+                email,
+                company,
+                password,
+              }).then(() => props.history.push(`/auth/sign-in`))
+                .catch(err => console.error(err));
+            }}
           >
             Sign Up
           </Button>
