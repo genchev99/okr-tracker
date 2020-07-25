@@ -30,5 +30,10 @@ export default {
     create: (objectiveId, keyResult) => axios.post(`${endpoints.OBJECTIVES}/${objectiveId}/key-results`, {...keyResult}),
     delete: (objectiveId, keyResultId) => axios.delete(`${endpoints.OBJECTIVES}/${objectiveId}/key-results/${keyResultId}`),
     update: (objectiveId, keyResultId, newValue) => axios.put(`${endpoints.OBJECTIVES}/${objectiveId}/key-results/${keyResultId}`, {newValue}),
+  },
+  statistics: {
+    tasksBetweenDepartments: () => axios.get(`${endpoints.STATISTICS}/tasks-between-departments`),
+    resultsByDepartment: () => axios.get(`${endpoints.STATISTICS}/results-by-department`),
+    totalProgress: () => axios.get(`${endpoints.STATISTICS}/total-progress`),
   }
 }

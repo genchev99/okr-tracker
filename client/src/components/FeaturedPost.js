@@ -41,7 +41,7 @@ export default function FeaturedPost(props) {
                 {post.description}
               </Typography>
               <Typography variant="subtitle1" color="primary">
-                Continue reading...
+                <a href={post.url || '#'}>Continue reading...</a>
               </Typography>
             </CardContent>
           </div>

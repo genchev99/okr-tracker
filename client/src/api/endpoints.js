@@ -7,4 +7,5 @@ export default {
   EMPLOYEES: `${baseUrl}/employees`,
   DEPARTMENTS: `${baseUrl}/departments`,
   OBJECTIVES: `${baseUrl}/objectives`,
+  STATISTICS: `${baseUrl}/statistics`,
 };
