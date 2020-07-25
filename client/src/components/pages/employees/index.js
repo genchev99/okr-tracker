@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import MaterialTable from 'material-table';
 import api from '../../../api';
 import Container from "@material-ui/core/Container";
@@ -11,6 +11,9 @@ import NativeSelect from "@material-ui/core/NativeSelect";
 import withStyles from "@material-ui/core/styles/withStyles";
 import FeaturedPost from "../../FeaturedPost";
 import Grid from "@material-ui/core/Grid";
+import SnackbarContext from "../../../contexts/SnackbarContext";
+
+const frontendAuthBase = 'http://localhost:3000/auth/sign-up';
 
 const BootstrapInput = withStyles((theme) => ({
   root: {
@@ -48,13 +51,15 @@ const BootstrapInput = withStyles((theme) => ({
 }))(InputBase);
 
 const Employees = () => {
+  const {error, success, warn} = useContext(SnackbarContext);
+
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchEmployees = async () => {
     await api.employees.get().then(({data}) => {
-      setEmployees(data.employees);
+      setEmployees(data.employees.map(employee => ({...employee, link: !employee.activated && `${frontendAuthBase}/${employee._id}` || 'activated'})));
     })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false));
@@ -110,20 +115,41 @@ const Employees = () => {
           {title: 'Email', field: 'email'},
           {title: 'Role', field: 'role', lookup: {root: 'Root', admin: 'Admin', 'teamLead': 'TeamLead', employee: 'Employee'}},
           {title: 'Department', field: 'department.name', lookup: { ...departments },},
+          {title: 'Invite link', field: 'link', editable: 'never'},
         ]}
         data={employees}
         editable={{
           onRowAdd: async (newData) => {
-            await api.employees.enroll(newData);
-            fetchEmployees()
+            try {
+              await api.employees.enroll(newData);
+
+              success('Employee was successfully enrolled!');
+            } catch (e) {
+              error(e.toString());
+            }
+
+            fetchEmployees();
           },
           onRowUpdate: async (newData, oldData) => {
-            console.log(newData);
-            await api.employees.update(oldData._id, newData);
+            try {
+              await api.employees.update(oldData._id, newData);
+
+              success('Employee was successfully updated!');
+            } catch (e) {
+              error(e.toString());
+            }
+
             fetchEmployees();
           },
           onRowDelete: async (oldData) => {
-            await api.employees.delete(oldData._id);
+            try {
+              await api.employees.delete(oldData._id);
+
+              success('Employee was successfully deleted!');
+            } catch (e) {
+              error(e.toString());
+            }
+
             fetchEmployees();
           }
         }}

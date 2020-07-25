@@ -14,6 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AuthContext from '../../../contexts/AuthContext';
 import validate from 'validate.js';
+import SnackbarContext from "../../../contexts/SnackbarContext";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -53,6 +54,8 @@ const constraints = {
 };
 
 export default function SignIn() {
+  const {error, success, warn} = useContext(SnackbarContext);
+
   const classes = useStyles();
   const {login} = useContext(AuthContext);
 
@@ -116,7 +119,8 @@ export default function SignIn() {
             onClick={() => login({
               email,
               password,
-            })}
+            }).then(() => success(`You have successfully logged in!`))
+              .catch(err => error(err.toString()))}
           >
             Sign In
           </Button>

@@ -18,6 +18,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import CreateKeyResult from "./CreateKeyResult";
 import FeaturedPost from "../../FeaturedPost";
+import SnackbarContext from "../../../contexts/SnackbarContext";
 
 
 const useStyles = makeStyles(theme => ({
@@ -46,6 +47,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Objectives = () => {
+  const {error, success, warn} = useContext(SnackbarContext);
+
   const classes = useStyles();
 
   const [title, setTitle] = useState('');
@@ -58,7 +61,7 @@ const Objectives = () => {
     setTitle('');
     setDepartment('');
     setDescription('');
-  }
+  };
 
 
   const getDepartments = async () => {
@@ -175,7 +178,8 @@ const Objectives = () => {
                   description,
                   department,
                 })
-                  .catch(err => console.error(err))
+                  .then(() => success('Objective was successfully created!'))
+                  .catch(err => error(err.toString()))
                   .then(() => getObjectives())
                   .finally(() => clearFields());
               }}

@@ -14,6 +14,8 @@ import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AuthContext from '../../../contexts/AuthContext';
 import api from '../../../api';
+import SnackbarContext from "../../../contexts/SnackbarContext";
+import {data} from "../dashboard/components/ResultsByDepartment/chart";
 
 function Copyright() {
   return (
@@ -49,6 +51,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function SignUp(props) {
+  const {error, success, warn} = useContext(SnackbarContext);
+
   const classes = useStyles();
   const {register} = useContext(AuthContext);
 
@@ -63,7 +67,6 @@ export default function SignUp(props) {
   useEffect(() => {
     api.auth.preregistered(props.match.params.preregistered)
       .then(({data}) => {
-        console.log(data)
         if (data.user) {
           setFirstName(data.user.firstName);
           setLastName(data.user.lastName);
@@ -75,6 +78,8 @@ export default function SignUp(props) {
           if (data.user.company) {
             setLockCompany(true);
           }
+
+          success('Successfully pre-fetched existing data for enrolled user!');
         }
       })
   }, []);
@@ -172,8 +177,10 @@ export default function SignUp(props) {
                 email,
                 company,
                 password,
-              }).then(() => props.history.push(`/auth/sign-in`))
-                .catch(err => console.error(err));
+              })
+                .then(() => success(`You have successfully registered a new user!`))
+                .then(() => props.history.push(`/auth/sign-in`))
+                .catch(err => error(err.toString()))
             }}
           >
             Sign Up

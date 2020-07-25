@@ -48,7 +48,7 @@ const TasksProgress = props => {
 
   const getProgress = async () =>
     await api.statistics.totalProgress()
-      .then(({data}) => setProgress(data.totalProgress))
+      .then(({data}) => setProgress(data.totalProgress || 0))
       .catch(err => console.error(err));
 
   useEffect(() => {

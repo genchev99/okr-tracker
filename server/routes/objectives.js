@@ -7,13 +7,13 @@ const passport = require('passport');
 
 
 router.get('/', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
-  const objectives = await Objective.find({archived: false})
+  const objectives = (await Objective.find({archived: false})
     .populate({
       path: 'department',
       match: {
-        company: req.user.company,
+        'company': req.user.company,
       }
-    });
+    })).filter(r => r.department);
 
   res.status(200).json({
     objectives,
